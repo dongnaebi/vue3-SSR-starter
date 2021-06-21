@@ -81,7 +81,7 @@ export function createRequest (app, { host = '', token = '', UUID = '', platform
         }
       }).then(response => {
         if (response.status >= 200 && response.status < 400) {
-          if (method.toLowerCase() === 'cache' && response.data.code === 0) {
+          if (method.toLowerCase() === 'cache' && response.data.code === 200) {
             cache.set(cacheKey, response.data)
           }
           const res = requestHandle([null, response.data], reject)
