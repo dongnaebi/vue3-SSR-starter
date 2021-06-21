@@ -69,7 +69,7 @@ export function createRequest (app, { host = '', token = '', UUID = '', platform
       axios({
         baseURL: host.value,
         timeout: 15000,
-        method,
+        method: method.toLowerCase() === 'cache' ? 'get' : method,
         url: url,
         data: qs,
         headers: {
