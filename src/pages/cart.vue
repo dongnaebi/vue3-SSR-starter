@@ -3,7 +3,7 @@
     <div v-for="li in list" :key="li.id" class="flex">
       <input type="checkbox" :checked="li.checked" @change="doChecked(li.id)">
       <div class="flex">
-        <img :src="li.img" alt="">
+        <img :src="li.img" alt="" style="width:90px;height:90px;">
         <div>
           <h4>{{ li.title }}</h4>
           <div class="flex align-middle">
