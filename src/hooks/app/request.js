@@ -60,9 +60,10 @@ export function createRequest (app, { host = '', token = '', UUID = '', platform
       qs = params
     }
 
+    const cacheKey = host.value + url
     return new Promise((resolve, reject) => {
-      if (cache.get(url) && method.toLowerCase() === 'cache') {
-        resolve(cache.get(url))
+      if (cache.get(cacheKey) && method.toLowerCase() === 'cache') {
+        resolve(cache.get(cacheKey))
         return
       }
       axios({
@@ -81,7 +82,7 @@ export function createRequest (app, { host = '', token = '', UUID = '', platform
       }).then(response => {
         if (response.status >= 200 && response.status < 400) {
           if (method.toLowerCase() === 'cache' && response.data.code === 0) {
-            cache.set(url, response.data)
+            cache.set(cacheKey, response.data)
           }
           const res = requestHandle([null, response.data], reject)
           resolve(res)
