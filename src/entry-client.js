@@ -23,7 +23,7 @@ const context = {
 }
 const { app, router, interact, session, request } = createApp(context, syncState)
 
-session.setUserInfo(null, request)
+session.setUserProfile(null, request)
 
 const { progressBar } = interact
 router.isReady().then(() => {

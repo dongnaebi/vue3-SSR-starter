@@ -10,7 +10,7 @@ export const CART_API = {
 export function useCart () {
   const { loading, confirm } = useInteract()
   const request = useRequest()
-  const { setUserInfo } = useSession()
+  const { setUserProfile } = useSession()
 
   const list = ref([])
 
@@ -48,7 +48,7 @@ export function useCart () {
     loading.close()
 
     if (res) {
-      setUserInfo({ cartCount: count })
+      setUserProfile({ cartCount: count })
       getCartList()
     }
   }
@@ -70,7 +70,7 @@ export function useCart () {
 
     const index = list.value.findIndex(li => li.id === id)
     list.value.splice(index, 1)
-    setUserInfo({ cartCount: list.value.length })
+    setUserProfile({ cartCount: list.value.length })
   }
 
   function doChecked (id = 0) {

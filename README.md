@@ -1,10 +1,11 @@
 # vue3-SSR-starter
-a out-of-the-box vue3-SSR starter
+Prefetch and sync state to client with one line of code, out-of-the-box
 ## Features
 - vue3
 - SSR
 - vue-router
-- no vuex
+- we don't need vuex anymore
+- one line of code to sync state
 - vite2
 - tailwind.css
 
@@ -17,31 +18,43 @@ npm run dev
 // localhost:3001
 ```
 
-## Server prefetch and sync to client
-we provide an `syncState` to sync the prefetch data to client, 
-if server fetch is fail, it will be downgrade to client fetch,
-you can use it like this:
+## Server prefetch and sync to client with one line of code
+It provide `syncState` object to sync the prefetch data to client, 
+you only need one line of code:
+```javascript
+async function setup () {
+  // ...
+
+  // request home data in server, and sync to client
+  syncState.homeData = syncState.homeData || await request('/api/home')
+
+  // ...
+}
+```
+Because of the `setup` hook run in both of server and client,
+so even server fetch is fail, it will be downgrade to client fetch,
+complete code:
 ```javascript
 // see src/pages/index.vue
 import { reactive } from 'vue'
 import { useSyncState, useRequest } from '../hooks/app'
 async function setup () {
-    const request = useRequest()
-    const syncState = useSyncState()
-    // sync data to client, if server fetch is fail, will be fetch in client, see index.html and server.js
-    if (!syncState.homeData) {
-      syncState.homeData = await request('/api/home')
-    }
-
-    const homeData = reactive(syncState.homeData)
-
-    return {
-      homeData
-    }
+  const request = useRequest()
+  const syncState = useSyncState()
+  // sync data to client, if server fetch is fail, will be fetch in client, see index.html and server.js
+  if (!syncState.homeData) {
+    syncState.homeData = await request('/api/home')
   }
+
+  const homeData = reactive(syncState.homeData)
+
+  return {
+    homeData
+  }
+}
 ```
-## app hook and business hook
-you maybe write a business in many clients, e.g. `PC web`, `mobile web`, `mini program`
+## App hook and business hook
+You maybe write a business in many clients, e.g. `PC web`, `mobile web`, `mini program`
 the business is same, but dom, style and project code is different, such as `request`, in web we 
 can use axios, but in `mini program` we can only use `wx.request`, for business code unification, 
 we need a `request` function to smoothing platform differences.
@@ -88,22 +101,23 @@ export default {
   }
 }
 ```
+You can reimplement it everywhere, see `src/hooks/app/interact.js`
 #### session
-provide user info or client info, you also can update the session, yes, you don't need `vuex` anymore:
+provide user info or client info, you can also update the session data, and yes, we don't need `vuex` anymore:
 ```javascript
 import { onMounted } from 'vue'
 import { useSession } from '../hooks/app'
 export default {
   setup () {
-    const { token, UUID, platform, userInfo, host, isLogin, setToken, setUserInfo } = useSession()
+    const { token, UUID, platform, userProfile, host, isLogin, setToken, setUserProfile } = useSession()
     onMounted(() => {
-      console.log(token, UUID, platform, userInfo, host, isLogin)
+      console.log(token, UUID, platform, userProfile, host, isLogin)
     })
     function onLogin (token) {
       setToken(token)
     }
     function updateCartCount () {
-      setUserInfo({ cartCount: 3 })
+      setUserProfile({ cartCount: 3 })
     }
   
     return {
@@ -114,7 +128,7 @@ export default {
 }
 ```
 #### request
-provide a axios instance to fetch data:
+provide a axios instance to fetch data in server and client:
 ```javascript
 import { useRequest } from '../hooks/app'
 async function setup () {
@@ -127,8 +141,8 @@ async function setup () {
 ```
 
 ### business hook
-You can refer to `src/hooks/business/useCart.js` and `src/pages/cart.vue`
+You can refer to `src/hooks/business/useCart.js` and `src/pages/cart.vue`, please make it universal
 
-## api proxy and port
-in `config/ssr.config.is`
+## Api proxy and serve port
+See `config/ssr.config.is`
 

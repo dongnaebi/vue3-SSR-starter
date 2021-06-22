@@ -20,7 +20,7 @@ export function createSession (app, context = defaultContext) {
     UUID: context.UUID || '',
     host: context.host,
     platform,
-    userInfo: {}
+    userProfile: {}
   })
 
   const isLogin = computed(() => !!session.token)
@@ -28,18 +28,18 @@ export function createSession (app, context = defaultContext) {
   function setToken (token = '') {
     session.token = token
     context.resetToken(token)
-    setUserInfo()
+    // setUserProfile()
   }
 
-  async function setUserInfo (newData, request) {
+  async function setUserProfile (newData, request) {
     if (newData) {
-      session.userInfo = Object.assign(session.userInfo, newData)
+      session.userProfile = Object.assign(session.userProfile, newData)
       return
     }
-    const res = await request('/api/users/userInfo')
+    const res = await request('/api/users/userProfile')
 
     if (res) {
-      session.userInfo = res
+      session.userProfile = res
       // 如果没有userId，认为这个token就是无效的，要清除
       if (!res.userId) {
         setToken('')
@@ -48,10 +48,10 @@ export function createSession (app, context = defaultContext) {
   }
 
   const sessionState = {
-    isLogin,
     ...toRefs(session),
+    isLogin,
     setToken,
-    setUserInfo
+    setUserProfile
   }
 
   app.provide(key, sessionState)
