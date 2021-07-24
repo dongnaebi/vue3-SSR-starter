@@ -18,6 +18,7 @@
   import { ref } from 'vue'
   import ProgressBar from '../components/ProgressBar'
   import interactImplement from './interactImplement'
+  import sxoImplement from './sxoImplement'
 
   export default {
     name: 'Layout',
@@ -27,6 +28,7 @@
     setup () {
       const progressBarRef = ref(null)
       interactImplement(progressBarRef)
+      sxoImplement()
 
       return { progressBarRef }
     }

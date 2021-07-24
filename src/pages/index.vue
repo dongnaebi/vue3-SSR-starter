@@ -11,7 +11,7 @@
 
 <script>
   import { reactive, onMounted } from 'vue'
-  import { useInteract, useSession, useSyncState, useRequest } from '../hooks/app'
+  import { useInteract, useSession, useSyncState, useRequest, useSXO } from '../hooks/app'
   import { Button } from 'ant-design-vue'
 
   async function setup () {
@@ -20,6 +20,7 @@
     const syncState = useSyncState()
     /* eslint-disable-next-line */
     const request = useRequest()
+    const { setSEO, setSMO } = useSXO()
 
     // sync data to client, if server fetch is fail, will be fetch in client, see index.html and server.js
     if (!syncState.homeData) {
@@ -28,6 +29,12 @@
     }
 
     const homeData = reactive(syncState.homeData)
+
+    setSEO({
+      title: 'Home page',
+      description: 'description after server fetch'
+    })
+    setSMO({ title: 'Home page title after server fetch' })
 
     onMounted(() => {
       loading.open('loading...')

@@ -21,20 +21,10 @@ const context = {
     window.localStorage.setItem(tokenKey, token)
   }
 }
-const { app, router, interact, session, request } = createApp(context, syncState)
+const { app, router, session, request } = createApp(context, syncState)
 
 session.setUserProfile(null, request)
 
-const { progressBar } = interact
 router.isReady().then(() => {
-  router.beforeEach((to, from) => {
-    progressBar.start()
-    return true
-  })
-  router.afterEach((to, from) => {
-    progressBar.end()
-    return true
-  })
-
   app.mount('#app')
 })

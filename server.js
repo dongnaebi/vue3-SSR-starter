@@ -55,6 +55,11 @@ async function createServer (
 
   app.use('*', async (req, res) => {
     const context = {
+      // for nginx, set config:
+      // proxy_set_header X-Forwarded-Proto $scheme
+      // proxy_set_header Host $host
+
+      // host: `${req.headers['x-forwarded-proto']}://${req.headers.host}`,
       host: `${req.protocol}://${req.headers.host}`,
       ua: req.headers['user-agent']
     }
@@ -72,9 +77,12 @@ async function createServer (
         render = require('./dist/server/entry-server.js').render
       }
 
-      const [err, appHtml, preloadLinks, syncState] = await render(url, manifest, context)
+      const [err, appHtml, preloadLinks, syncState, headTags, htmlAttrs, bodyAttrs] = await render(url, manifest, context)
 
       const html = template
+        .replace('data-html-attrs', htmlAttrs)
+        .replace('<!--head-tags-->', headTags)
+        .replace('data-body-attrs', bodyAttrs)
         .replace('<!--preload-links-->', preloadLinks)
         .replace('<!--ssr-outlet-->', appHtml)
         .replace('/*sync-state-outlet*/', `window.__syncState__ = ${JSON.stringify(syncState)}`) // 注入同步数据

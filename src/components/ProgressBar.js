@@ -28,9 +28,11 @@ export default {
       show.value = false
       clearTimeout(aniTimer)
       setTimeout(() => {
-        show.value = true
         percent.value = 0
       }, 400)
+      setTimeout(() => {
+        show.value = true
+      }, 500)
     }
 
     return {

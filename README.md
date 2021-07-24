@@ -59,7 +59,7 @@ the business is same, but dom, style and project code is different, such as `req
 can use axios, but in `mini program` we can only use `wx.request`, for business code unification, 
 we need a `request` function to smoothing platform differences.
 
-so we provide app hooks, you need to write your app hook in every client, but your business 
+So we provide app hooks, you need to write your app hook in every client, but your business 
 hook can be a npm package
 
 ### app hooks
@@ -103,7 +103,7 @@ export default {
 ```
 You can reimplement it everywhere, see `src/hooks/app/interact.js`
 #### session
-provide user info or client info, you can also update the session data, and yes, we don't need `vuex` anymore:
+Provide user info or client info, you can also update the session data, and yes, we don't need `vuex` anymore:
 ```javascript
 import { onMounted } from 'vue'
 import { useSession } from '../hooks/app'
@@ -128,7 +128,7 @@ export default {
 }
 ```
 #### request
-provide a axios instance to fetch data in server and client:
+Provide an axios instance to fetch data in server and client:
 ```javascript
 import { useRequest } from '../hooks/app'
 async function setup () {
@@ -138,7 +138,25 @@ async function setup () {
     const res = await request('/api/home')
     console.log(res)
   }
+export default { setup }
 ```
+#### SEO/SMO
+Set html head tags for SEO or SMO: e.g. title, description, keywords, ogp.
+```javascript
+import { useSXO } from '../hooks/app'
+function setup () {
+    const { setSEO, setSMO } = useSXO()
+    
+    setSEO({
+      title: 'SEO title',
+      description: 'SEO description'
+    })
+    setSMO({ title: 'SMO title' })
+  }
+export default { setup }
+```
+It will be set default value on router change if you have not set in pages,
+you can set the default value in `src/router/index.js`
 
 ### business hook
 You can refer to `src/hooks/business/useCart.js` and `src/pages/cart.vue`, please make it universal
